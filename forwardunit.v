@@ -25,6 +25,7 @@ module forwardunit(
     input [4:0] rs,
     input [4:0] rt,
     input [4:0] memrd,
+    input regdst,
     input exregwrite,
     input memregwrite,
     output reg[1:0] forwarda,
@@ -33,8 +34,8 @@ module forwardunit(
     
     always@(*)begin
     if(exregwrite && exrd!=0 && exrd==rs) forwarda=2'b10;
-    else if(exregwrite && exrd!=0 && exrd==rt) forwardb = 2'b10;
+    else if(exregwrite && exrd!=0 && exrd==rt && regdst == 0) forwardb = 2'b10;
     else if(memregwrite && memrd!=0 && memrd==rs) forwarda=2'b01;
-    else if(memregwrite && memrd!=0 && memrd==rt) forwarda=2'b01;
+    else if(memregwrite && memrd!=0 && memrd==rt && regdst == 0) forwarda=2'b01;
     end
 endmodule

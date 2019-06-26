@@ -46,7 +46,7 @@ module control(
                 MemWrite = 0;
                 ALUsrc = 0;
                 RegWrite = 1;
-                bne = 1;
+                bne = 0;
             end
             6'h23: //lw
             begin
@@ -59,7 +59,7 @@ module control(
                 MemWrite = 0;
                 ALUsrc = 1;
                 RegWrite = 1;
-                bne = 1;
+                bne = 0;
             end
             6'h2b:
             begin //sw
@@ -72,7 +72,7 @@ module control(
                 MemWrite = 1;
                 ALUsrc = 1;
                 RegWrite = 0;
-                bne = 1;
+                bne = 0;
             end
             6'h4: //beq
             begin 
@@ -85,7 +85,7 @@ module control(
                 MemWrite = 0;
                 ALUsrc = 1;
                 RegWrite = 0;
-                bne = 1;
+                bne = 0;
             end  
             6'h4: //bne
             begin 
@@ -98,7 +98,7 @@ module control(
                 MemWrite = 0;
                 ALUsrc = 1;
                 RegWrite = 0;
-                bne = 0;
+                bne = 1;
             end
             6'h2: //J
             begin 
@@ -111,7 +111,7 @@ module control(
                 MemWrite = 0;
                 ALUsrc = 1;
                 RegWrite = 0;
-                bne = 1;
+                bne = 0;
             end
             default:;             
         endcase

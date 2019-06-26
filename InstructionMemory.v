@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 06/22/2019 03:51:05 PM
+// Create Date: 06/26/2019 06:39:10 PM
 // Design Name: 
-// Module Name: EXMEM
+// Module Name: InstructionMemory
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,8 +20,22 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module EXMEM(
-    input clk,
-    
+module InstructionMemory(
+    input addr,
+    output reg [31:0] instru
     );
+    parameter x = 32;
+    integer i;
+
+    reg [31:0] memory [0:x-1];
+
+    initial begin
+        for (i = 0; i < x; i = i + 1)
+            memory[i] = 32'b0;
+        `include "memory.txt"
+    end
+
+    always @(*)begin
+        instru = memory[addr >> 2];
+    end
 endmodule

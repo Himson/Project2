@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 06/22/2019 03:51:05 PM
+// Create Date: 06/26/2019 06:39:10 PM
 // Design Name: 
-// Module Name: EXMEM
+// Module Name: ProgramCounter
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,8 +20,13 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module EXMEM(
+module ProgramCounter(
     input clk,
-    
+    input [31:0] next,
+    input stall,
+    output reg[31:0] instru_addr
     );
+    always@(posedge clk)begin
+        if(stall == 0) instru_addr=next;
+    end
 endmodule
