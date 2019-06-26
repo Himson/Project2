@@ -26,7 +26,7 @@ module registerfile(
     input [4:0] rt,
     input [4:0] writeaddr,
     input [31:0] writedata,
-    input regwrite
+    input regwrite,
     output reg[31:0] rsdata,
     output reg[31:0] rtdata
     );

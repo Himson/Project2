@@ -22,15 +22,26 @@
 
 module IDEX(
     input clk,
-    output reg Regdst,
-    output reg Jump,
-    output reg beq,
-    output reg bne,
-    output reg MemRead,
-    output reg MemtoReg,
-    output reg[1:0] ALUOp,
-    output reg MemWrite,
-    output reg ALUsrc,
-    output reg RegWrite
+    input flush,
+    input Regdst,
+    input Jump,
+    input beq,
+    input bne,
+    input MemRead,
+    input MemtoReg,
+    input[1:0] ALUOp,
+    input MemWrite,
+    input ALUsrc,
+    input RegWrite,
+    output reg Regdstout,
+    output reg Jumpout,
+    output reg beqout,
+    output reg bneout,
+    output reg MemReadout,
+    output reg MemtoRegout,
+    output reg[1:0] ALUOpout,
+    output reg MemWriteout,
+    output reg ALUsrcout,
+    output reg RegWriteout 
     );
 endmodule

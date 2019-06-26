@@ -35,9 +35,10 @@ module hazarddetection(
     input exregdst,
     input memregwrite,
     input memrd,
+    input MemtoReg,
     output reg idflush = 0,
     output reg stall = 0,
-    output reg forward,
+    output reg forward
     );
     always@(*)begin
         if(exMemRead && (idrs==exrt || idrt==exrt)) begin //load-store harzard detection
@@ -46,7 +47,7 @@ module hazarddetection(
             forward = 1'b0; 
         end
         else if(beq || bne) begin
-            if(exregwrite && (((idrs == exrd || idrt == exrd)&& exregdst = 0) ||((idrs == exrt || idrt == exrt) && exregdst = 1)) )begin
+            if(exregwrite && (((idrs == exrd || idrt == exrd)&& exregdst == 0) ||((idrs == exrt || idrt == exrt) && exregdst == 1)) )begin
                 stall = 1;
                 idflush = 1;
                 forward = 1'b0; 
