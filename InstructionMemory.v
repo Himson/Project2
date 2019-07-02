@@ -21,7 +21,7 @@
 
 
 module InstructionMemory(
-    input addr,
+    input [31:0] addr,
     output reg [31:0] instru
     );
     parameter x = 32;

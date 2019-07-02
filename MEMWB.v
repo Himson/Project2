@@ -21,7 +21,23 @@
 
 
 module MEMWB(
-    input aluresult,
-    input memreadout
+    input clk,
+    input [31:0] aluresult,
+    input [31:0] memreadresult,
+    input [4:0] rd,
+    input Regwrite,
+    input MemtoReg,
+    output reg [31:0] aluresultout,
+    output reg [31:0] memreadresultout,
+    output reg [4:0] rdout,
+    output reg Regwriteout,
+    output reg MemtoRegout
     );
+    always@(posedge clk)begin
+        aluresultout <= aluresult;
+        memreadresultout <= memreadresult;
+        rdout <= rd;
+        Regwriteout <= Regwrite;
+        MemtoRegout <= MemtoReg;
+    end
 endmodule

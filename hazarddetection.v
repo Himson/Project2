@@ -38,7 +38,7 @@ module hazarddetection(
     input MemtoReg,
     output reg idflush = 0,
     output reg stall = 0,
-    output reg forward
+    output reg forward = 0
     );
     always@(*)begin
         if(exMemRead && (idrs==exrt || idrt==exrt)) begin //load-store harzard detection
@@ -60,6 +60,11 @@ module hazarddetection(
                 end
                 else forward = 1'b1;
             end
+        end
+        else begin
+            stall = 0;
+            idflush = 0;
+            forward = 1'b0;             
         end
     end
 endmodule

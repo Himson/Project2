@@ -22,26 +22,29 @@
 
 module EXMEM(
     input clk,
-    input flush,
-    input Regdst,
-    input Jump,
-    input beq,
-    input bne,
+    input [31:0] aluresult,
+    input [4:0] rd,
     input MemRead,
     input MemtoReg,
     input[1:0] ALUOp,
     input MemWrite,
     input ALUsrc,
     input RegWrite,
-    output reg Regdstout,
+    output reg [31:0] aluresultout,
+    output reg [4:0] rdout,
     output reg Jumpout,
-    output reg beqout,
-    output reg bneout,
     output reg MemReadout,
     output reg MemtoRegout,
     output reg[1:0] ALUOpout,
     output reg MemWriteout,
-    output reg ALUsrcout,
     output reg RegWriteout 
     );
+    always@(posedge clk)begin  
+        aluresultout <= aluresult;
+        rdout <= rd;
+        MemReadout <= MemRead;
+        MemtoRegout <= MemtoReg;
+        ALUOpout <= ALUOp;
+        RegWriteout <= RegWrite;    
+    end
 endmodule
