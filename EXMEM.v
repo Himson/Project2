@@ -26,7 +26,7 @@ module EXMEM(
     input [4:0] rd,
     input MemRead,
     input MemtoReg,
-    input[1:0] ALUOp,
+    input[3:0] ALUControl,
     input MemWrite,
     input ALUsrc,
     input RegWrite,
@@ -35,7 +35,7 @@ module EXMEM(
     output reg Jumpout,
     output reg MemReadout,
     output reg MemtoRegout,
-    output reg[1:0] ALUOpout,
+    output reg[1:0] ALUControlout,
     output reg MemWriteout,
     output reg RegWriteout 
     );
@@ -44,7 +44,7 @@ module EXMEM(
         rdout <= rd;
         MemReadout <= MemRead;
         MemtoRegout <= MemtoReg;
-        ALUOpout <= ALUOp;
+        ALUControlout <= ALUControl;
         RegWriteout <= RegWrite;    
     end
 endmodule
