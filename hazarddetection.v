@@ -23,18 +23,18 @@
 module hazarddetection(
     input beq,
     input bne,
-    input idrs,
-    input idrt,
+    input [4:0] idrs,
+    input [4:0] idrt,
     input idregdst,
     input idMemwrite,
     input exregwrite,
     input exMemRead,
-    input exrt,
-    input exrd,
+    input [4:0] exrt,
+    input [4:0] exrd,
     input exregdst,
     input memregwrite,
-    input memrd,
-    input MemtoReg,
+    input [4:0] memrd,
+    input mem_MemtoReg,
     output reg idflush = 0,
     output reg stall = 0,
     output reg forward1 = 0,
@@ -55,7 +55,7 @@ module hazarddetection(
                 forward2 = 0;
             end
             else if(memregwrite && (idrs == memrd || idrt == memrd)) begin
-                if(MemtoReg) begin
+                if(mem_MemtoReg) begin
                     stall = 1;
                     idflush = 1;
                     forward1 = 1'b0;

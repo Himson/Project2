@@ -27,7 +27,6 @@ module IDEX(
     input [4:0] rt,
     input [4:0] rd,
     input Regdst,
-    input Jump,
     input MemRead,
     input MemtoReg,
     input[1:0] ALUOp,
@@ -40,10 +39,7 @@ module IDEX(
     output reg [4:0] rsout,
     output reg [4:0] rtout,
     output reg [4:0] rdout,
-    output reg [31:0] read1out,
-    output reg [31:0] read2out, 
     output reg Regdstout,
-    output reg Jumpout,
     output reg MemReadout,
     output reg MemtoRegout,
     output reg[1:0] ALUOpout,
@@ -51,11 +47,12 @@ module IDEX(
     output reg ALUsrcout,
     output reg RegWriteout,
     output reg [31:0] Immediateout
+    output reg [31:0] read1out,
+    output reg [31:0] read2out,
     );
     always@(posedge clk, flush)begin
     if(flush)begin   
         Regdstout <= 0;
-        Jumpout <= 0;
         MemReadout <= 0;
         MemtoRegout <= 0;
         ALUOpout <= 0;
@@ -71,7 +68,6 @@ module IDEX(
         read1out <= read1;
         read2out <= read2;
         Regdstout <= Regdst;
-        Jumpout <=Jump;
         MemReadout <= MemRead;
         MemtoRegout <= MemtoReg;
         ALUOpout <= ALUOp;

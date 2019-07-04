@@ -21,7 +21,7 @@
 
 
 module DataMemory(
-    input addr,
+    input [31:0] addr,
     input MemWrite,
     input MemRead,
     input [31:0] WriteData,

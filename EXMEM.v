@@ -26,25 +26,24 @@ module EXMEM(
     input [4:0] rd,
     input MemRead,
     input MemtoReg,
-    input[3:0] ALUControl,
     input MemWrite,
-    input ALUsrc,
     input RegWrite,
+    input [31:0] ex_forwarded_rtdata,
     output reg [31:0] aluresultout,
     output reg [4:0] rdout,
-    output reg Jumpout,
     output reg MemReadout,
     output reg MemtoRegout,
-    output reg[1:0] ALUControlout,
     output reg MemWriteout,
-    output reg RegWriteout 
+    output reg RegWriteout,
+    output reg [31:0] mem_forwarded_rtdata
     );
     always@(posedge clk)begin  
         aluresultout <= aluresult;
         rdout <= rd;
         MemReadout <= MemRead;
         MemtoRegout <= MemtoReg;
-        ALUControlout <= ALUControl;
-        RegWriteout <= RegWrite;    
+        MemWriteout <= MemWrite;
+        RegWriteout <= RegWrite;  
+        mem_forwarded_rtdata <= ex_forwarded_rtdata;
     end
 endmodule

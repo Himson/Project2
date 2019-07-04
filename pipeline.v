@@ -91,14 +91,9 @@ module pipeline(
         idALUsrc,
         idRegWrite
     );   
-    wire [3:0] idALUControl;
-    ALUcontrol alucontrol(
-        idALUOp,
-        id_instru[5:0],
-        idALUControl
-    );
+
     wire [4:0] wbrd;
-    wire [31:0] wbdata;
+    wire [31:0] wb_write_to_reg_data;
     wire wbregwrite;
     wire [31:0] idrsdata;
     wire [31:0] idrtdata;
@@ -107,7 +102,7 @@ module pipeline(
         idrs,
         idrt,
         wbrd,
-        wbdata,
+        wb_write_to_reg_data,
         wbregwrite,
         idrsdata,
         idrtdata
@@ -142,6 +137,154 @@ module pipeline(
         jump,
         ifbranchorjump
     );
+    wire [4:0] exrs;
+    wire [4:0] exrt;
+    wire [4:0] exrd;
+    wire exRegdst;
+    wire exMemRead;
+    wire exMemtoReg;
+    wire exALUOp;
+    wire [3:0] exALUControl;
+    wire exMemWrite;
+    wire exALUsrc;
+    wire exRegWrite;
+    wire [31:0] exImmediate;
+    wire [31:0] exrsdata;
+    wire [31:0] exrtdata;
+    ALUcontrol alucontrol(
+        exALUOp,
+        exImmediate[5:0],
+        exALUControl
+    );
+    wire harzard_detection_id_flush;   
+    IDEX idex(
+        clk,
+        harzard_detection_id_flush,
+        idrs,
+        idrt,
+        idrd,
+        idRegdst,
+        idMemRead,
+        idMemtoReg,
+        idALUOp,
+        idMemWrite,
+        idALUsrc,
+        idRegWrite,
+        signexten,
+        idrsdata,
+        idrtdata,
+        exrs,
+        exrt,
+        exrd,
+        exRegdst,
+        exMemRead,
+        exMemtoReg,
+        exALUOp,
+        exMemWrite,
+        exALUsrc,
+        exRegWrite,
+        exImmediate,
+        exrsdata,
+        exrtdata
+    );
+    wire aluzero;
+    wire [31:0] ex_alu_result;
+    wire [31:0] ex_forwarded_rsdata;
+    wire [31:0] ex_forwarded_rtdata;
+    wire [31:0] mem_alu_result;
+    wire [31:0] wb_write_to_reg_data;
+    wire [31:0] ex_forwarded_or_immediate_rtdata;
+    wire forward_a_control;
+    wire forward_b_control;
+    mux3to1 rs_forward_a_mux(
+        exrsdata,
+        wb_write_to_reg_data,
+        mem_alu_result,
+        forward_a_control,
+        ex_forwarded_rsdata
+    );
+    mux3to1 rt_forward_a_mux(
+        exrtdata,
+        wb_write_to_reg_data,
+        mem_alu_result,
+        forward_b_control,
+        ex_forwarded_rtdata
+    );
+    mux2to1 rt_immediate_mux(
+        ex_forwarded_rtdata,
+        exImmediate,
+        exALUsrc,
+        ex_forwarded_or_immediate_rtdata
+    );
+    wire [4:0] ex_writeback_rd;
+    mux2to1 Regdst_mux(
+        exrt,
+        exrd,
+        exRegWrite,
+        ex_writeback_rd
+    )
+    
+    ALU alu(
+        ex_forwarded_rsdata,
+        ex_forwarded_or_immediate_rtdata,
+        ALUcontrol,
+        aluzero
+        ex_alu_result
+    );
+    wire [31:0] mem_alu_result;
+    wire [4:0] mem_rd;
+    wire mem_MemRead;
+    wire mem_MemtoReg;
+    wire mem_MemWrite;
+    wire mem_RegWrite;
+    EXMEM exmem(
+        clk,
+        ex_alu_result,
+        ex_writeback_rd,
+        exMemRead,
+        exMemtoReg,
+        exMemWrite,
+        exRegWrite,
+        mem_alu_result,
+        mem_rd,
+        mem_MemRead,
+        mem_MemtoReg,
+        mem_MemWrite,
+        mem_RegWrite
+    );
+    wire [31:0] mem_forwarded_rtdata;
+    wire [31:0] mem_memory_readdata;
+    DataMemory dm(
+        mem_alu_result,
+        mem_MemWrite,
+        mem_MemRead,
+        mem_forwarded_rtdata,
+        mem_memory_readdata
+    )
+    wire [31:0] wb_alu_result;
+    wire [31:0] wb_memory_readdata;
+    wire [4:0] wb_rd;
+    wire wbregwrite;
+    wire wb_MemtoReg;
+    MEMWB memwb(
+        clk,
+        mem_alu_result,
+        mem_memory_readdata,
+        mem_rd,
+        mem_RegWrite,
+        mem_MemtoReg,
+        wb_alu_result,
+        wb_memory_readdata,
+        wb_rd,
+        wbregwrite,
+        wb_MemtoReg
+    );
+    mux2to1 Mem_or_alu_to_Reg_mux(
+        wb_alu_result,
+        wb_memory_readdata,
+        wb_MemtoReg,
+        wb_write_to_reg_data
+    );
     hazarddetection hd(
         idbeq,
         idbe,
@@ -149,5 +292,28 @@ module pipeline(
         idrt,
         idRegdst,
         idMemWrite,
+        exRegWrite,
+        exMemRead,
+        exrt,
+        exrd,
+        mem_RegWrite,
+        mem_rd,
+        mem_MemtoReg,
+        harzard_detection_id_flush,
+        harzard_detection2pc_stall,
+        branch_hazard_rs_control,
+        branch_hazard_rt_control      
+    );
+    forwardunit forward(
+        exrs,
+        exrt,
+        mem_rd,
+        wb_rd,
+        exRegdst,
+        mem_RegWrite,
+        wbregwrite,
+        mem_MemRead,
+        forward_a_control,
+        forward_b_control
     );
 endmodule
