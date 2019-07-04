@@ -25,19 +25,19 @@ module pipeline(
     );
     wire [31:0] if_current_instru_addr_plus4;
     wire [31:0] ifbranchorjump;
+    wire [31:0] next_instruction_addr;
     wire if_pcmux_control;
-    wire [31:0] nextinstru_addr;
     mux2to1 pcincomemux(
       if_current_instru_addr_plus4,
       ifbranchorjump,
       if_pcmux_control,
-      nextinstru_addr,        `
+      next_instruction_addr
     );
     wire harzard_detection2pc_stall;
     wire [31:0] current_instru_addr;
     ProgramCounter pc(
         clk,
-        nextinstru_addr,
+        next_instruction_addr,
         harzard_detection2pc_stall,
         current_instru_addr
     );
@@ -46,7 +46,7 @@ module pipeline(
         current_instru_addr,
         if_current_instru
     );
-    assign if_current_instru_addr_plus4 = instru_addr+4;
+    assign if_current_instru_addr_plus4 = if_current_instru+4;
     wire ifflush;
     wire [31:0] id_instru;
     wire [31:0] id_instru_addr_plus4;
@@ -79,12 +79,12 @@ module pipeline(
     wire idALUsrc;
     wire idRegWrite;
     control Control(
-        instru,
+        id_instru,
         idRegdst,
         idJump,
         idbeq,
-        idbe,
-        MemRead,
+        idbne,
+        idMemRead,
         idMemtoReg,
         idALUOp,
         idMemWrite,
@@ -126,15 +126,16 @@ module pipeline(
         to_compare_rt
     );
     assign idequal = (to_compare_rt==to_compare_rs);
-    wire branch_or_not = (idbeq&&idequal)||(idbe&&!idequal);
+    wire branch_or_not;
+    assign branch_or_not = (idbeq&&idequal)||(idbne&&!idequal);
     wire [27:0] id_instru_jump_addr_shift2;
     assign id_instru_jump_addr_shift2 = id_instru[25:0] << 2;
     wire [31:0] jump_addr = {id_instru_addr_plus4[31:28], id_instru_jump_addr_shift2};   
-    assign if_pcmux_control = jump||branch_or_not;
+    assign if_pcmux_control = idJump||branch_or_not;
     mux2to1 id_jump_or_branch_mux(
         branchaddress,
         jump_addr,
-        jump,
+        idJump,
         ifbranchorjump
     );
     wire [4:0] exrs;
@@ -192,7 +193,6 @@ module pipeline(
     wire [31:0] ex_forwarded_rsdata;
     wire [31:0] ex_forwarded_rtdata;
     wire [31:0] mem_alu_result;
-    wire [31:0] wb_write_to_reg_data;
     wire [31:0] ex_forwarded_or_immediate_rtdata;
     wire forward_a_control;
     wire forward_b_control;
@@ -222,16 +222,15 @@ module pipeline(
         exrd,
         exRegWrite,
         ex_writeback_rd
-    )
+    );
     
     ALU alu(
         ex_forwarded_rsdata,
         ex_forwarded_or_immediate_rtdata,
-        ALUcontrol,
-        aluzero
+        exALUControl,
+        aluzero,
         ex_alu_result
     );
-    wire [31:0] mem_alu_result;
     wire [4:0] mem_rd;
     wire mem_MemRead;
     wire mem_MemtoReg;
@@ -260,11 +259,10 @@ module pipeline(
         mem_MemRead,
         mem_forwarded_rtdata,
         mem_memory_readdata
-    )
+    );
     wire [31:0] wb_alu_result;
     wire [31:0] wb_memory_readdata;
     wire [4:0] wb_rd;
-    wire wbregwrite;
     wire wb_MemtoReg;
     MEMWB memwb(
         clk,
@@ -287,7 +285,7 @@ module pipeline(
     );
     hazarddetection hd(
         idbeq,
-        idbe,
+        idbne,
         idrs,
         idrt,
         idRegdst,

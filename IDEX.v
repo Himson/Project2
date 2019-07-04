@@ -46,9 +46,9 @@ module IDEX(
     output reg MemWriteout,
     output reg ALUsrcout,
     output reg RegWriteout,
-    output reg [31:0] Immediateout
+    output reg [31:0] Immediateout,
     output reg [31:0] read1out,
-    output reg [31:0] read2out,
+    output reg [31:0] read2out
     );
     always@(posedge clk, flush)begin
     if(flush)begin   

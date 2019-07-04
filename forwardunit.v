@@ -55,8 +55,9 @@ module forwardunit(
         forwardb <= 2'b00;
     end 
     else 
-    end begin
-        forwarda <= 2'b00;
-        forwardb <= 2'b00;
+        begin
+            forwarda <= 2'b00;
+            forwardb <= 2'b00;
+        end
     end
 endmodule
