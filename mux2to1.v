@@ -27,7 +27,10 @@ module mux2to1(
     output reg[31:0] out 
     );
     always@(*)begin
-        if(control==1'b0) out = port0;
-        else out=port1;
+        case(control)
+            1'b0: out = port0;
+            1'b1: out = port1;
+            default: out = port0;
+        endcase
     end
 endmodule

@@ -28,8 +28,11 @@ module mux3to1(
     output reg[31:0] out
     );
     always@(*)begin
-        if(control==2'b00) out = port0;
-        else if(control==2'b01) out = port1;
-        else if(control==2'b10) out = port2;
+        case(control)
+            2'b00: out = port0;
+            2'b01: out = port1;
+            2'b10: out = port2;
+            default out = port0;
+        endcase
     end
 endmodule

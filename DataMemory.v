@@ -35,7 +35,7 @@ module DataMemory(
 
     initial begin
         for (i = 0; i < x; i = i + 1)
-            memory[i] = 32'b0;
+            memory[i] <= 32'b0;
     end
 
     always@(MemRead,MemWrite)begin

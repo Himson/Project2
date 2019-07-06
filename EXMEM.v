@@ -35,7 +35,7 @@ module EXMEM(
     output reg MemtoRegout = 0,
     output reg MemWriteout = 0,
     output reg RegWriteout = 0,
-    output reg [31:0] mem_forwarded_rtdata = 0
+    output reg [31:0] mem_forwarded_rtdata = 32'b0
     );
     always@(posedge clk)begin  
         aluresultout <= aluresult;

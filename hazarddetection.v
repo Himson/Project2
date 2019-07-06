@@ -25,13 +25,10 @@ module hazarddetection(
     input bne,
     input [4:0] idrs,
     input [4:0] idrt,
-    input idregdst,
-    input idMemwrite,
+    input idalusrc,
     input exregwrite,
     input exMemRead,
-    input [4:0] exrt,
     input [4:0] exrd,
-    input exregdst,
     input memregwrite,
     input [4:0] memrd,
     input mem_MemtoReg,
@@ -41,14 +38,14 @@ module hazarddetection(
     output reg forward2 = 0
     );
     always@(*)begin
-        if(exMemRead && (idrs==exrt || idrt==exrt)) begin //load-store harzard detection
+        if(exMemRead && (idrs == exrd)||(idrt == exrd && idalusrc == 0)) begin //load-use harzard detection
             stall = 1;
             idflush = 1;
             forward1 = 1'b0; 
-            forward2 = 0;
+            forward2 = 1'b0;
         end
         else if(beq || bne) begin
-            if(exregwrite && (((idrs == exrd || idrt == exrd)&& exregdst == 0) ||((idrs == exrt || idrt == exrt) && exregdst == 1)) )begin
+            if(exregwrite &&  (idrs == exrd || idrt == exrd))begin
                 stall = 1;
                 idflush = 1;
                 forward1 = 1'b0; 
@@ -59,16 +56,28 @@ module hazarddetection(
                     stall = 1;
                     idflush = 1;
                     forward1 = 1'b0;
-                    forward2 = 0;                         
+                    forward2 = 1'b0;                         
                 end
-                else forward1 = 1'b1;
+                else begin
+                    stall = 0;
+                    idflush = 0;
+                    if(idrs == memrd) begin
+                        forward1 = 1'b1;
+                        forward2 = 1'b0;
+                    end
+                    else begin
+                        forward1 = 1'b0;
+                        forward2 = 1'b1;
+                    end
+
             end
         end
         else begin
-            stall = 0;
-            idflush = 0;
-            forward1 = 1'b0; 
-            forward2 = 0;            
+            stall <= 1'b0;
+            idflush <= 1'b0;
+            forward1 <= 1'b0; 
+            forward2 <= 1'b0;            
         end
+    end
     end
 endmodule

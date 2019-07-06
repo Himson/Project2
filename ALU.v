@@ -38,7 +38,7 @@ module ALU(
         if(Rs<Rt) result = 32'h1;
         else result = 32'h0;
         end
-        default: ;
+        default: result = 32'h0;
     endcase
     end
 
