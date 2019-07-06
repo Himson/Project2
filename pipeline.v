@@ -21,7 +21,7 @@
 
 
 module pipeline;
-    reg clk = 0;
+    reg clk = 1;
     always #50 clk=~clk;
     wire [31:0] if_current_instru_addr_plus4;
     wire [31:0] ifbranchorjump;
@@ -112,19 +112,19 @@ module pipeline;
     wire [31:0] to_compare_rt;
     wire [31:0] to_compare_rs;
     wire [31:0] mem_alu_result;
-
+    mux2to1 forward_branch_hazard_rs(
+        idrsdata,
+        mem_alu_result,
+        branch_hazard_rs_control,
+        to_compare_rs
+    );
     mux2to1 forward_branch_hazard_rt(
         idrtdata,
         mem_alu_result,
         branch_hazard_rt_control,
         to_compare_rt
     );
-    mux2to1 forward_branch_hazard_rs(
-        idrsdata,
-        mem_alu_result,
-        branch_hazard_rs_control,
-        to_compare_rt
-    );
+
     assign idequal = (to_compare_rt==to_compare_rs);
     wire branch_or_not;
     assign branch_or_not = (idbeq&&idequal)||(idbne&&!idequal);
@@ -235,22 +235,26 @@ module pipeline;
     wire mem_MemtoReg;
     wire mem_MemWrite;
     wire mem_RegWrite;
-    EXMEM exmem(
-        clk,
-        ex_alu_result,
-        ex_writeback_rd,
-        exMemRead,
-        exMemtoReg,
-        exMemWrite,
-        exRegWrite,
-        mem_alu_result,
-        mem_rd,
-        mem_MemRead,
-        mem_MemtoReg,
-        mem_MemWrite,
-        mem_RegWrite
-    );
     wire [31:0] mem_forwarded_rtdata;
+
+    EXMEM exmem(
+        .clk(clk),
+        .aluresult(ex_alu_result),
+        .rd(ex_writeback_rd),
+        .MemRead(exMemRead),
+        .MemtoReg(exMemtoReg),
+        .MemWrite(exMemWrite),
+        .RegWrite(exRegWrite),
+        .ex_forwarded_rtdata(ex_forwarded_rtdata),
+        .aluresultout(mem_alu_result),
+        .rdout(mem_rd),
+        .MemReadout(mem_MemRead),
+        .MemtoRegout(mem_MemtoReg),
+        .MemWriteout(mem_MemWrite),
+        .RegWriteout(mem_RegWrite),
+        .mem_forwarded_rtdata(mem_forwarded_rtdata)
+    );
+    
     wire [31:0] mem_memory_readdata;
     DataMemory dm(
         mem_alu_result,
@@ -282,23 +286,21 @@ module pipeline;
         wb_write_to_reg_data
     );
     hazarddetection hd(
-        idbeq,
-        idbne,
-        idrs,
-        idrt,
-        idRegdst,
-        idMemWrite,
-        exRegWrite,
-        exMemRead,
-        exrt,
-        exrd,
-        mem_RegWrite,
-        mem_rd,
-        mem_MemtoReg,
-        harzard_detection_id_flush,
-        harzard_detection2pc_stall,
-        branch_hazard_rs_control,
-        branch_hazard_rt_control      
+        .beq(idbeq),
+        .bne(idbne),
+        .idrs(idrs),
+        .idrt(idrt),
+        .idalusrc(idALUsrc),
+        .exregwrite(exRegWrite),
+        .exMemRead(exMemRead),
+        .exrd(ex_writeback_rd),
+        .memregwrite(mem_RegWrite),
+        .memrd(mem_rd),
+        .mem_MemtoReg(mem_MemtoReg),
+        .idflush(harzard_detection_id_flush),
+        .stall(harzard_detection2pc_stall),
+        .forward1(branch_hazard_rs_control),
+        .forward2(branch_hazard_rt_control)      
     );
     forwardunit forward(
         exrs,
