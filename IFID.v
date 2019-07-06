@@ -24,18 +24,19 @@ module IFID(
     input clk,
     input [31:0] instruction,
     input [31:0] instru_addr_plus4,
-    input ifflush,
-    output reg[31:0] instru_out = 0,
-    output reg[31:0] instru_addr_plus4_out = 0
+    // input ifflush,
+    output reg[31:0] instru_out = 32'b0,
+    output reg[31:0] instru_addr_plus4_out = 32'b0
     );
-    always@(posedge clk, ifflush)begin
-        if(ifflush == 1)begin
-            instru_out <= 0;
-            instru_addr_plus4_out <= 0;
-        end
-        else begin
+    always@(posedge clk)
+    // begin
+    //     if(ifflush == 1)begin
+    //         instru_out <= 0;
+    //         instru_addr_plus4_out <= 0;
+    //     end
+    //     else 
+    begin
             instru_out <= instruction;
             instru_addr_plus4_out <= instru_addr_plus4;
-        end
     end
 endmodule

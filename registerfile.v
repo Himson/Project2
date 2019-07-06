@@ -37,9 +37,11 @@ module registerfile(
     initial begin
         for (i = 0; i < x; i = i + 1)
             register[i] <= 32'b0;
+        rsdata <= 32'b0;
+        rtdata <= 32'b0;
     end
 
-    always@(clk)begin
+    always@(*)begin
         if(clk==1'b1)begin
             if(regwrite == 1'b1)begin
                 register[writeaddr] <= writedata;

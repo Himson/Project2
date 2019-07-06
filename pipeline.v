@@ -21,7 +21,7 @@
 
 
 module pipeline;
-    reg clk = 1;
+    reg clk = 0;
     always #50 clk=~clk;
     wire [31:0] if_current_instru_addr_plus4;
     wire [31:0] ifbranchorjump;
@@ -47,14 +47,13 @@ module pipeline;
         if_current_instru
     );
     assign if_current_instru_addr_plus4 = current_instru_addr+4;
-    wire ifflush;
+    //wire ifflush;
     wire [31:0] id_instru;
     wire [31:0] id_instru_addr_plus4;
     IFID ifid(
         clk,
         if_current_instru,
         if_current_instru_addr_plus4,
-        ifflush,
         id_instru,
         id_instru_addr_plus4 
     );
@@ -108,20 +107,21 @@ module pipeline;
         idrtdata
     );
     wire idequal;
-    wire [31:0] memforwardrd;
     wire branch_hazard_rs_control;
     wire branch_hazard_rt_control;
     wire [31:0] to_compare_rt;
     wire [31:0] to_compare_rs;
+    wire [31:0] mem_alu_result;
+
     mux2to1 forward_branch_hazard_rt(
         idrtdata,
-        memforwardrd,
+        mem_alu_result,
         branch_hazard_rt_control,
         to_compare_rt
     );
-        mux2to1 forward_branch_hazard_rs(
+    mux2to1 forward_branch_hazard_rs(
         idrsdata,
-        memforwardrd,
+        mem_alu_result,
         branch_hazard_rs_control,
         to_compare_rt
     );
@@ -144,7 +144,7 @@ module pipeline;
     wire exRegdst;
     wire exMemRead;
     wire exMemtoReg;
-    wire exALUOp;
+    wire [1:0] exALUOp;
     wire [3:0] exALUControl;
     wire exMemWrite;
     wire exALUsrc;
@@ -192,7 +192,6 @@ module pipeline;
     wire [31:0] ex_alu_result;
     wire [31:0] ex_forwarded_rsdata;
     wire [31:0] ex_forwarded_rtdata;
-    wire [31:0] mem_alu_result;
     wire [31:0] ex_forwarded_or_immediate_rtdata;
     wire forward_a_control;
     wire forward_b_control;
@@ -262,7 +261,6 @@ module pipeline;
     );
     wire [31:0] wb_alu_result;
     wire [31:0] wb_memory_readdata;
-    wire [4:0] wb_rd;
     wire wb_MemtoReg;
     MEMWB memwb(
         .clk(clk),
@@ -273,7 +271,7 @@ module pipeline;
         .MemtoReg(mem_MemtoReg),
         .aluresultout(wb_alu_result),
         .memreadresultout(wb_memory_readdata),
-        .rdout(wb_rd),
+        .rdout(wbrd),
         .Regwriteout(wbregwrite),
         .MemtoRegout(wb_MemtoReg)
     );
@@ -306,7 +304,7 @@ module pipeline;
         exrs,
         exrt,
         mem_rd,
-        wb_rd,
+        wbrd,
         exRegdst,
         mem_RegWrite,
         wbregwrite,

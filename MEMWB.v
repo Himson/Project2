@@ -34,11 +34,11 @@ module MEMWB(
     output reg MemtoRegout
     );
     initial begin
-        aluresultout <= 0;
-        memreadresultout <= 0;
-        rdout <= 0;
-        Regwriteout <= 0;
-        MemtoRegout <= 0;
+        aluresultout <= 32'd0;
+        memreadresultout <= 32'b0;
+        rdout <= 5'b0;
+        Regwriteout <= 1'b0;
+        MemtoRegout <= 1'b0;
     end
     always@(posedge clk)begin
         aluresultout <= aluresult;
