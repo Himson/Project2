@@ -29,13 +29,13 @@ module EXMEM(
     input MemWrite,
     input RegWrite,
     input [31:0] ex_forwarded_rtdata,
-    output reg [31:0] aluresultout,
-    output reg [4:0] rdout,
-    output reg MemReadout,
-    output reg MemtoRegout,
-    output reg MemWriteout,
-    output reg RegWriteout,
-    output reg [31:0] mem_forwarded_rtdata
+    output reg [31:0] aluresultout = 0,
+    output reg [4:0] rdout = 0,
+    output reg MemReadout = 0,
+    output reg MemtoRegout = 0,
+    output reg MemWriteout = 0,
+    output reg RegWriteout = 0,
+    output reg [31:0] mem_forwarded_rtdata = 0
     );
     always@(posedge clk)begin  
         aluresultout <= aluresult;

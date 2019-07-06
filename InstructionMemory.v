@@ -36,6 +36,6 @@ module InstructionMemory(
     end
 
     always @(*)begin
-        instru = memory[addr >> 2];
+        if(addr <= 7'b1111100)instru = memory[addr >> 2];
     end
 endmodule

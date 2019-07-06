@@ -20,18 +20,18 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module pipeline(
-    input clk
-    );
+module pipeline;
+    reg clk = 1;
+    always #50 clk=~clk;
     wire [31:0] if_current_instru_addr_plus4;
     wire [31:0] ifbranchorjump;
     wire [31:0] next_instruction_addr;
     wire if_pcmux_control;
     mux2to1 pcincomemux(
-      if_current_instru_addr_plus4,
-      ifbranchorjump,
-      if_pcmux_control,
-      next_instruction_addr
+      .port0(if_current_instru_addr_plus4),
+      .port1(ifbranchorjump),
+      .control(if_pcmux_control),
+      .out(next_instruction_addr)
     );
     wire harzard_detection2pc_stall;
     wire [31:0] current_instru_addr;
@@ -46,7 +46,7 @@ module pipeline(
         current_instru_addr,
         if_current_instru
     );
-    assign if_current_instru_addr_plus4 = if_current_instru+4;
+    assign if_current_instru_addr_plus4 = current_instru_addr+4;
     wire ifflush;
     wire [31:0] id_instru;
     wire [31:0] id_instru_addr_plus4;
@@ -119,7 +119,7 @@ module pipeline(
         branch_hazard_rt_control,
         to_compare_rt
     );
-    mux2to1 forward_branch_hazard_rs(
+        mux2to1 forward_branch_hazard_rs(
         idrsdata,
         memforwardrd,
         branch_hazard_rs_control,
@@ -265,17 +265,17 @@ module pipeline(
     wire [4:0] wb_rd;
     wire wb_MemtoReg;
     MEMWB memwb(
-        clk,
-        mem_alu_result,
-        mem_memory_readdata,
-        mem_rd,
-        mem_RegWrite,
-        mem_MemtoReg,
-        wb_alu_result,
-        wb_memory_readdata,
-        wb_rd,
-        wbregwrite,
-        wb_MemtoReg
+        .clk(clk),
+        .aluresult(mem_alu_result),
+        .memreadresult(mem_memory_readdata),
+        .rd(mem_rd),
+        .Regwrite(mem_RegWrite),
+        .MemtoReg(mem_MemtoReg),
+        .aluresultout(wb_alu_result),
+        .memreadresultout(wb_memory_readdata),
+        .rdout(wb_rd),
+        .Regwriteout(wbregwrite),
+        .MemtoRegout(wb_MemtoReg)
     );
     mux2to1 Mem_or_alu_to_Reg_mux(
         wb_alu_result,

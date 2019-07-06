@@ -25,8 +25,8 @@ module IFID(
     input [31:0] instruction,
     input [31:0] instru_addr_plus4,
     input ifflush,
-    output reg[31:0] instru_out,
-    output reg[31:0] instru_addr_plus4_out
+    output reg[31:0] instru_out = 0,
+    output reg[31:0] instru_addr_plus4_out = 0
     );
     always@(posedge clk, ifflush)begin
         if(ifflush == 1)begin

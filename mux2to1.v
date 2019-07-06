@@ -24,7 +24,7 @@ module mux2to1(
     input [31:0] port0,
     input [31:0] port1,
     input control,
-    output reg[31:0] out
+    output reg[31:0] out 
     );
     always@(*)begin
         if(control==1'b0) out = port0;

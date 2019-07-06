@@ -26,6 +26,7 @@ module ProgramCounter(
     input stall,
     output reg[31:0] instru_addr
     );
+    initial instru_addr = 0;
     always@(posedge clk)begin
         if(stall == 0) instru_addr=next;
     end
