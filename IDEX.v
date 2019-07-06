@@ -50,7 +50,7 @@ module IDEX(
     output reg [31:0] read1out = 32'b0,
     output reg [31:0] read2out = 32'b0
     );
-    always@(posedge clk, flush)begin
+    always@(posedge clk)begin
     if(flush)begin   
         Regdstout <= 0;
         MemReadout <= 0;

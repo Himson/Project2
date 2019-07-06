@@ -38,20 +38,20 @@ module hazarddetection(
     output reg forward2 = 0
     );
     always@(*)begin
-        if(exMemRead && (idrs == exrd)||(idrt == exrd && idalusrc == 0)) begin //load-use harzard detection
+        if(exMemRead == 1 && ((idrs == exrd)||(idrt == exrd && idalusrc == 0))) begin //load-use harzard detection
             stall = 1;
             idflush = 1;
             forward1 = 1'b0; 
             forward2 = 1'b0;
         end
-        else if(beq || bne) begin
-            if(exregwrite &&  (idrs == exrd || idrt == exrd))begin
+        else if(beq == 1||bne == 1) begin
+            if(exregwrite == 1 &&  (idrs == exrd || idrt == exrd))begin
                 stall = 1;
                 idflush = 1;
-                forward1 = 1'b0; 
+                forward1 = 0; 
                 forward2 = 0;
             end
-            else if(memregwrite && (idrs == memrd || idrt == memrd)) begin
+            else if(memregwrite == 1 && (idrs == memrd || idrt == memrd)) begin
                 if(mem_MemtoReg) begin
                     stall = 1;
                     idflush = 1;
@@ -73,8 +73,8 @@ module hazarddetection(
             end
         end
         else begin
-            stall <= 1'b0;
-            idflush <= 1'b0;
+            stall       <= 1'b0;
+            idflush  <= 1'b0;
             forward1 <= 1'b0; 
             forward2 <= 1'b0;            
         end

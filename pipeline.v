@@ -51,11 +51,12 @@ module pipeline;
     wire [31:0] id_instru;
     wire [31:0] id_instru_addr_plus4;
     IFID ifid(
-        clk,
-        if_current_instru,
-        if_current_instru_addr_plus4,
-        id_instru,
-        id_instru_addr_plus4 
+        .clk(clk),
+        .instruction(if_current_instru),
+        .instru_addr_plus4(if_current_instru_addr_plus4),
+        .stall(harzard_detection2pc_stall),
+        .instru_out(id_instru),
+        .instru_addr_plus4_out(id_instru_addr_plus4) 
     );
     wire [31:0] signexten;
     assign signexten = {{16{id_instru[15]}}, id_instru[15:0]};

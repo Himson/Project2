@@ -27,8 +27,8 @@ module registerfile(
     input [4:0] writeaddr,
     input [31:0] writedata,
     input regwrite,
-    output reg[31:0] rsdata,
-    output reg[31:0] rtdata
+    output reg[31:0] rsdata = 32'b0,
+    output reg[31:0] rtdata = 32'b0
     );
     parameter x = 32;
     integer i;
