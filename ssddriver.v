@@ -95,7 +95,7 @@ module Divide_500_to_1 (clock, Output_clock);
 endmodule
 
 // module Ring_Counter
-// EFFECT: 用于计数, counter 满了之后会自动回到 0
+// EFFECT: 用于计数, counter 满了之�?�会自动回到 0
 module Ring_Counter(
     input   wire            clock,
     output  reg     [1:0]   counter
@@ -164,8 +164,8 @@ module SSD_Display(
         endcase
     end
 
-    SSD_Driver ssd_driver (
-        .Q_in(Q), .Q_out(Cathodes)
+    ssddriver ssd_driver (
+        .in(Q), .out(Cathodes)
     );
 
 endmodule
