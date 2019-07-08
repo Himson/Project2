@@ -32,32 +32,17 @@ module forwardunit(
     output reg[1:0] forwarda,
     output reg[1:0] forwardb
     );
-    
     always@(*)begin
-    if (exmemregwrite == 0 && exmemregwrite == 0) begin
-        forwarda <= 2'b00;
-        forwardb <= 2'b00;
-    end
-    if(exmemregwrite && ex_mem_rd!=0 && ex_mem_rd==rs) begin
-        forwarda <= 2'b10;
-        forwardb <= 2'b00;
-    end
-    else if(exmemregwrite && ex_mem_rd!=0 && ex_mem_rd==rt && regdst == 0) begin
-        forwarda <= 2'b00;
-        forwardb <= 2'b10;
-    end
-    else if(memwbregwrite && mem_wb_rd!=0 && mem_wb_rd==rs)begin
-        forwarda <= 2'b01;
-        forwardb <= 2'b00;
-    end
-    else if(memwbregwrite && mem_wb_rd!=0 && mem_wb_rd==rt && regdst == 0) begin
-        forwarda <= 2'b01;
-        forwardb <= 2'b00;
-    end 
-    else 
-        begin
-            forwarda <= 2'b00;
-            forwardb <= 2'b00;
-        end
+        if(exmemregwrite && rs==ex_mem_rd && rs != 0)
+            forwarda = 2'b10;
+        else if(memwbregwrite && rs==mem_wb_rd && rs != 0)
+            forwarda = 2'b01;
+        else forwarda = 2'b00;
+
+        if(exmemregwrite && rt==ex_mem_rd && rt != 0)
+            forwardb = 2'b10;
+        else if(memwbregwrite && rt==mem_wb_rd && rt != 0)
+            forwardb = 2'b01;
+        else forwardb = 2'b00;
     end
 endmodule

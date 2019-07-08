@@ -33,7 +33,7 @@ module MEMWB(
     output reg Regwriteout,
     output reg MemtoRegout
     );
-    initial begin
+    initial #0 begin
         aluresultout <= 32'd0;
         memreadresultout <= 32'b0;
         rdout <= 5'b0;

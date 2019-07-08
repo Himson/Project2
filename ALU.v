@@ -30,7 +30,7 @@ module ALU(
     assign zero = (result == 0);
     always@(Rs,Rt,ALUControl)begin 
     case(ALUControl)
-        4'b0010: result = Rs+Rt;
+        4'b0010: result=Rs+Rt;
         4'b0110: result=Rs-Rt;
         4'b0000: result=Rs&Rt;
         4'b0001: result=Rs|Rt;

@@ -22,7 +22,7 @@
 
 module pipeline;
     reg clk = 1;
-    always #50 clk=~clk;
+
     wire [31:0] if_current_instru_addr_plus4;
     wire [31:0] ifbranchorjump;
     wire [31:0] next_instruction_addr;
@@ -160,42 +160,42 @@ module pipeline;
     );
     wire harzard_detection_id_flush;   
     IDEX idex(
-        clk,
-        harzard_detection_id_flush,
-        idrs,
-        idrt,
-        idrd,
-        idRegdst,
-        idMemRead,
-        idMemtoReg,
-        idALUOp,
-        idMemWrite,
-        idALUsrc,
-        idRegWrite,
-        signexten,
-        idrsdata,
-        idrtdata,
-        exrs,
-        exrt,
-        exrd,
-        exRegdst,
-        exMemRead,
-        exMemtoReg,
-        exALUOp,
-        exMemWrite,
-        exALUsrc,
-        exRegWrite,
-        exImmediate,
-        exrsdata,
-        exrtdata
+        .clk(clk),
+        .flush(harzard_detection_id_flush),
+        .rs(idrs),
+        .rt(idrt),
+        .rd(idrd),
+        .Regdst(idRegdst),
+        .MemRead(idMemRead),
+        .MemtoReg(idMemtoReg),
+        .ALUOp(idALUOp),
+        .MemWrite(idMemWrite),
+        .ALUsrc(idALUsrc),
+        .RegWrite(idRegWrite),
+        .Immediate(signexten),
+        .read1(idrsdata),
+        .read2(idrtdata),
+        .rsout(exrs),
+        .rtout(exrt),
+        .rdout(exrd),
+        .Regdstout(exRegdst),
+        .MemReadout(exMemRead),
+        .MemtoRegout(exMemtoReg),
+        .ALUOpout(exALUOp),
+        .MemWriteout(exMemWrite),
+        .ALUsrcout(exALUsrc),
+        .RegWriteout(exRegWrite),
+        .Immediateout(exImmediate),
+        .read1out(exrsdata),
+        .read2out(exrtdata)
     );
     wire aluzero;
     wire [31:0] ex_alu_result;
     wire [31:0] ex_forwarded_rsdata;
     wire [31:0] ex_forwarded_rtdata;
     wire [31:0] ex_forwarded_or_immediate_rtdata;
-    wire forward_a_control;
-    wire forward_b_control;
+    wire [1:0] forward_a_control;
+    wire [1:0] forward_b_control;
     mux3to1 rs_forward_a_mux(
         exrsdata,
         wb_write_to_reg_data,
@@ -220,7 +220,7 @@ module pipeline;
     mux2to1 Regdst_mux(
         exrt,
         exrd,
-        exRegWrite,
+        exRegdst,
         ex_writeback_rd
     );
     
@@ -315,4 +315,16 @@ module pipeline;
         forward_a_control,
         forward_b_control
     );
+    integer i = 0;
+    always #50 begin
+        $display("Time: %d, CLK = %d, PC = 0x%H", i, clk, next_instruction_addr);
+        $display("[$s0] = 0x%H, [$s1] = 0x%H, [$s2] = 0x%H", RF.register[16], RF.register[17], RF.register[18]);
+        $display("[$s3] = 0x%H, [$s4] = 0x%H, [$s5] = 0x%H", RF.register[19], RF.register[20], RF.register[21]);
+        $display("[$s6] = 0x%H, [$s7] = 0x%H, [$t0] = 0x%H", RF.register[22], RF.register[23], RF.register[8]);
+        $display("[$t1] = 0x%H, [$t2] = 0x%H, [$t3] = 0x%H", RF.register[9], RF.register[10], RF.register[11]);
+        $display("MEM[1] = 0x%H, MEM[8] = 0x%H",dm.memory[1],dm.memory[8]);
+        $display("----------------------------------------------------------");
+        clk = ~clk;
+        if (clk) i = i + 1;
+    end
 endmodule

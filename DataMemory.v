@@ -38,12 +38,13 @@ module DataMemory(
             memory[i] <= 32'b0;
     end
 
-    always@(MemRead,MemWrite)begin
+    always@(*)begin
         if(MemRead==1'b1)begin
             ReadData = memory[ind];
         end
         if(MemWrite==1'b1)begin
             memory[ind] = WriteData;
+            $display("$Mem[%d] = %H",ind,WriteData);
         end
     end
 endmodule

@@ -43,6 +43,8 @@ module ALUcontrol(
                 default: ;
              endcase
          end
+         2'b11:
+            ALUControl=4'b0000;
          default: ;
          endcase
     end

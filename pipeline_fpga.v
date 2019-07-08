@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 06/22/2019 03:51:05 PM
+// Create Date: 07/08/2019 09:08:17 PM
 // Design Name: 
-// Module Name: mux2to1
+// Module Name: pipeline_fpga
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,11 +20,12 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mux2to1(
-    input [31:0] port0,
-    input [31:0] port1,
-    input control,
-    output [31:0] out 
+module pipeline_fpga(
+    input   wire    clock,
+    input   wire    clock_100MHz,
+    input   wire            Disp_PC,
+    input   wire    [4:0]   RegisterIndex,        
+    output  wire    [3:0]   Anodes,
+    output  wire    [6:0]   Cathodes
     );
-    assign out = (control == 1'b0) ? port0 : port1;
 endmodule

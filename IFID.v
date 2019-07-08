@@ -29,6 +29,10 @@ module IFID(
     output reg[31:0] instru_out = 32'b0,
     output reg[31:0] instru_addr_plus4_out = 32'b0
     );
+    initial #0 begin
+        instru_out <= 32'b0;
+        instru_addr_plus4_out <= 32'b0;
+    end
     always@(posedge clk)
     begin
     //     if(ifflush == 1)begin

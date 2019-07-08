@@ -41,7 +41,7 @@ module control(
                 Jump = 0;
                 beq = 0;
                 MemRead = 0;
-                MemtoReg = 1;
+                MemtoReg = 0;
                 ALUOp = 2'b10;
                 MemWrite = 0;
                 ALUsrc = 0;
@@ -109,10 +109,36 @@ module control(
                 MemtoReg = 0;
                 ALUOp = 2'b01;
                 MemWrite = 0;
-                ALUsrc = 1;
+                ALUsrc = 0;
                 RegWrite = 0;
                 bne = 0;
             end
+            6'h8: //addi
+            begin 
+                Regdst = 0;
+                Jump = 0;
+                beq = 0;
+                MemRead = 0;
+                MemtoReg = 0;
+                ALUOp = 2'b00;
+                MemWrite = 0;
+                ALUsrc = 1;
+                RegWrite = 1;
+                bne = 0;
+            end   
+            6'hc: //andi
+            begin 
+                Regdst = 0;
+                Jump = 0;
+                beq = 0;
+                MemRead = 0;
+                MemtoReg = 0;
+                ALUOp = 2'b11;
+                MemWrite = 0;
+                ALUsrc = 1;
+                RegWrite = 1;
+                bne = 0;
+            end                        
             default:;             
         endcase
     end
