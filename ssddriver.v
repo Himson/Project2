@@ -29,41 +29,28 @@ module ssddriver(
     end
     always @(*) begin
         case (in)
-            4'h0: out = 7'b1000000;
-            4'h1: out = 7'b1111001;
-            4'h2: out = 7'b0100100;
-            4'h3: out = 7'b0110000;
-            4'h4: out = 7'b0011001;
-            4'h5: out = 7'b0010010;
-            4'h6: out = 7'b0000010;
-            4'h7: out = 7'b1111000;
-            4'h8: out = 7'b0000000;
-            4'h9: out = 7'b0010000;
-            4'ha: out = 7'b0001000;
-            4'hb: out = 7'b0000011;
-            4'hc: out = 7'b1000110;
-            4'hd: out = 7'b0100001;
-            4'he: out = 7'b0000110;
-            4'hf: out = 7'b0001110;
-            default: out = 7'b1111111;
+            4'h0:out = 7'b0000001;
+            4'h1:out = 7'b1001111;
+            4'h2:out = 7'b0010010;
+            4'h3:out = 7'b0000110;
+            4'h4:out = 7'b1001100;
+            4'h5:out = 7'b0100100;
+            4'h6:out = 7'b0100000;
+            4'h7:out = 7'b0001111;
+            4'h8:out = 7'b0000000;
+            4'h9:out = 7'b0000100;
+            4'ha:out = 7'b0001000;
+            4'hb:out = 7'b1100000;
+            4'hc:out = 7'b0110001;
+            4'hd:out = 7'b1000010;
+            4'he:out = 7'b0110000;
+            4'hf:out = 7'b0111000;
+            default: 
+                 out = 7'b1111111;
         endcase
     end
 endmodule
 
-module Divider_100M_to_500(clock, Output_clock);
-    input clock;
-    output Output_clock;
-    reg Output_clock;
-    reg [17:0] Counter;
-    
-    initial begin #0 Counter = 0; Output_clock = 0; end
-        
-    always @ (posedge clock)   begin
-        if (Counter == 199999) begin Output_clock <= 1; Counter <= 0;  end
-        else if (Counter == 1) begin  Output_clock <= 0; Counter <= Counter + 1;  end
-        else Counter <= Counter + 1;   
-    end
-endmodule
 module Divider_100M_to_500(clock, Output_clock);
     input clock;
     output Output_clock;
@@ -95,7 +82,7 @@ module Divide_500_to_1 (clock, Output_clock);
 endmodule
 
 // module Ring_Counter
-// EFFECT: 用于计数, counter 满了之�?�会自动回到 0
+// EFFECT: 用于计数, counter 满了之�?�会自动回到 0
 module Ring_Counter(
     input   wire            clock,
     output  reg     [1:0]   counter
@@ -115,14 +102,14 @@ endmodule
 //      - 实质上这里输入的clock必须是FPGA自带的clock
 module SSD_Display(
     input   wire            clock,
-    input   wire    [15:0]  number,
+    input   wire    [31:0]  number_32,
     output  wire    [6:0]   Cathodes,
     output  reg     [3:0]   Anodes
 );
     wire clock_500Hz, clock_1Hz;
     wire [1:0]  counter;
     reg [3:0]  Q;
-
+    wire [15:0] number = number_32[15:0];
     initial begin
         Q = 4'b0000;
         Anodes = 4'b1111;

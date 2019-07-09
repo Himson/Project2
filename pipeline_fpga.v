@@ -20,9 +20,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module pipeline_fpga(
-    input   clk,
-    input   clk100Mhz,
-    input   Disp_PC,
+    input   clock,
+    input   cycle,
     input   [4:0]RegisterIndex,        
     output  [3:0]Anodes,
     output  [6:0]Cathodes
@@ -40,7 +39,7 @@ module pipeline_fpga(
     wire harzard_detection2pc_stall;
     wire [31:0] current_instru_addr;
     ProgramCounter pc(
-        clk,
+        cycle,
         next_instruction_addr,
         harzard_detection2pc_stall,
         current_instru_addr
@@ -55,7 +54,7 @@ module pipeline_fpga(
     wire [31:0] id_instru;
     wire [31:0] id_instru_addr_plus4;
     IFID ifid(
-        .clk(clk),
+        .clk(cycle),
         .instruction(if_current_instru),
         .instru_addr_plus4(if_current_instru_addr_plus4),
         .stall(harzard_detection2pc_stall),
@@ -101,18 +100,18 @@ module pipeline_fpga(
     wire wbregwrite;
     wire [31:0] idrsdata;
     wire [31:0] idrtdata;
-    wire [15:0] number;
+    wire [31:0] number;
     RF_fpga RF(
-        clk,
-        idrs,
-        idrt,
-        wbrd,
-        wb_write_to_reg_data,
-        wbregwrite,
-        RegisterIndex,
-        idrsdata,
-        idrtdata,
-        number
+        .clk(cycle),
+        .rs(idrs),
+        .rt(idrt),
+        .writeaddr(wbrd),
+        .writedata(wb_write_to_reg_data),
+        .regwrite(wbregwrite),
+        .index(RegisterIndex),
+        .rsdata(idrsdata),
+        .rtdata(idrtdata),
+        .number(number)
     );
     wire idequal;
     wire branch_hazard_rs_control;
@@ -167,7 +166,7 @@ module pipeline_fpga(
     );
     wire harzard_detection_id_flush;   
     IDEX idex(
-        .clk(clk),
+        .clk(cycle),
         .flush(harzard_detection_id_flush),
         .rs(idrs),
         .rt(idrt),
@@ -246,7 +245,7 @@ module pipeline_fpga(
     wire [31:0] mem_forwarded_rtdata;
 
     EXMEM exmem(
-        .clk(clk),
+        .clk(cycle),
         .aluresult(ex_alu_result),
         .rd(ex_writeback_rd),
         .MemRead(exMemRead),
@@ -275,7 +274,7 @@ module pipeline_fpga(
     wire [31:0] wb_memory_readdata;
     wire wb_MemtoReg;
     MEMWB memwb(
-        .clk(clk),
+        .clk(cycle),
         .aluresult(mem_alu_result),
         .memreadresult(mem_memory_readdata),
         .rd(mem_rd),
@@ -323,8 +322,8 @@ module pipeline_fpga(
         forward_b_control
     );
     SSD_Display Test1 (
-          .clock(clk100Mhz), 
-          .number(number), 
+          .clock(clock), 
+          .number_32(RegisterIndex), 
           .Cathodes(Cathodes), 
           .Anodes(Anodes)
     );

@@ -27,10 +27,10 @@ module RF_fpga(
     input [4:0] writeaddr,
     input [31:0] writedata,
     input regwrite,
-    output reg[31:0] rsdata = 32'b0,
-    output reg[31:0] rtdata = 32'b0,
     input  [4:0] index,
-    output [15:0] number
+    output reg[31:0] rsdata = 32'b0,
+    output reg[31:0] rtdata = 32'b0, 
+    output [31:0] number
     );
     parameter x = 32;
     integer i;
