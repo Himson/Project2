@@ -28,8 +28,8 @@ module RF_fpga(
     input [31:0] writedata,
     input regwrite,
     input  [4:0] index,
-    output reg[31:0] rsdata = 32'b0,
-    output reg[31:0] rtdata = 32'b0, 
+    output [31:0] rsdata,
+    output [31:0] rtdata, 
     output [31:0] number
     );
     parameter x = 32;
@@ -39,19 +39,25 @@ module RF_fpga(
     initial begin
         for (i = 0; i < x; i = i + 1)
             register[i] <= 32'b0;
-        rsdata <= 32'b0;
-        rtdata <= 32'b0;
+//        rsdata <= 32'b0;
+//        rtdata <= 32'b0;
     end
     assign number = register[index];
-    always@(*)begin
-        if(clk==1'b1)begin
+    assign rsdata = register[rs];
+    assign rtdata = register[rt];
+    always@(negedge clk)begin
+//        if(clk==1'b0)begin
             if(regwrite == 1'b1)begin
-                register[writeaddr] <= writedata;
-            end
-        end
-        else begin
-            rsdata <= register[rs];
-            rtdata <= register[rt];
+            register[writeaddr] = writedata;
+//            end
+            register[0] = 0;
+            // for (i = 1; i < x; i = i + 1)
+            //     register[i] = register[i];         
+            // end
+//        end
+//        else begin
+//            rsdata = register[rs];
+//            rtdata = register[rt];
         end
     end
 endmodule

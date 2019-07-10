@@ -26,12 +26,10 @@ module pipeline_fpga(
     output  [3:0]Anodes,
     output  [6:0]Cathodes,
     output  reg[4:0]count,
-    output [4:0] Indexs
+    output  wb_regwrite
     );
-    assign Indexs = RegisterIndex;
     initial #0 begin
         count = 5'b00001;
-        $display("count is %d", count);
     end
     always@(posedge cycle) count = count + 1;
     wire [31:0] if_current_instru_addr_plus4;
@@ -272,6 +270,7 @@ module pipeline_fpga(
     
     wire [31:0] mem_memory_readdata;
     DataMemory dm(
+        cycle,
         mem_alu_result,
         mem_MemWrite,
         mem_MemRead,
@@ -329,6 +328,7 @@ module pipeline_fpga(
         forward_a_control,
         forward_b_control
     );
+    
 //    reg [31:0] test = 32'h00000020;
 //    reg [31:0] test;
 //    initial begin 
@@ -336,10 +336,11 @@ module pipeline_fpga(
 //    #1 test = cycle;
 //    end
 //    always @(cycle) test = cycle;
-    SSD_Display Test1 (
-          .clock(clock), 
-          .number_32(current_instru_addr), 
-          .Cathodes(Cathodes), 
-          .Anodes(Anodes)
-    );
+    assign wb_regwrite = wbregwrite;
+     SSD_Display Test1 (
+           .clock(clock), 
+           .number_32(number), 
+           .Cathodes(Cathodes), 
+           .Anodes(Anodes)
+     );
 endmodule
