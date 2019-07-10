@@ -65,7 +65,7 @@ module pipeline;
     wire [4:0] idrs;
     wire [4:0] idrt;
     wire [4:0] idrd;
-    assign idrs = id_instru[25:21];
+    assign signexten = {{16{id_instru[15]}}, id_instru[15:0]};
     assign idrt = id_instru[20:16];
     assign idrd = id_instru[15:11];
     wire idRegdst;

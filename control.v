@@ -139,7 +139,18 @@ module control(
                 RegWrite = 1;
                 bne = 0;
             end                        
-            default:;             
+            default: begin
+                Regdst = 0;
+                Jump = 0;
+                beq = 0;
+                MemRead = 0;
+                MemtoReg = 0;
+                ALUOp = 2'b00;
+                MemWrite = 0;
+                ALUsrc = 0;
+                RegWrite = 0;
+                bne = 0;  
+            end                   
         endcase
     end
 endmodule
