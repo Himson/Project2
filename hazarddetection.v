@@ -83,30 +83,30 @@ module hazarddetection(
             end
             if(exregwrite == 1)begin
                 if(idrs == exrd || idrt == exrd)begin
-                    stall = 1;
-                    idflush = 1;
-                    forward1 = 0; 
-                    forward2 = 0;
+                    stall <= 1;
+                    idflush <= 1;
+                    forward1 <= 0; 
+                    forward2 <= 0;
                 end
             end
             else if(memregwrite == 1) begin
                 if((idrs == memrd || idrt == memrd)) begin
                     if(mem_MemtoReg) begin
-                        stall = 1;
-                        idflush = 1;
-                        forward1 = 1'b0;
-                        forward2 = 1'b0;                         
+                        stall <= 1;
+                        idflush <= 1;
+                        forward1 <= 1'b0;
+                        forward2 <= 1'b0;                         
                     end   
                     else begin
-                        stall = 0;
-                        idflush = 0;
+                        stall <= 0;
+                        idflush <= 0;
                         if(idrs == memrd) begin
-                            forward1 = 1'b1;
-                            forward2 = 1'b0;
+                            forward1 <= 1'b1;
+                            forward2 <= 1'b0;
                         end
                         else begin
-                            forward1 = 1'b0;
-                            forward2 = 1'b1;
+                            forward1 <= 1'b0;
+                            forward2 <= 1'b1;
                         end
                     end                 
                 end

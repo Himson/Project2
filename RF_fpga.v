@@ -42,7 +42,7 @@ module RF_fpga(
         rsdata <= 32'b0;
         rtdata <= 32'b0;
     end
-    assign number = register[index][15:0];
+    assign number = register[index];
     always@(*)begin
         if(clk==1'b1)begin
             if(regwrite == 1'b1)begin

@@ -1,15 +1,4 @@
-`timescale 1ns / 1ps
 
-module single(
-    
-);
-    reg clk = 1;
-    wire [4:0] rs; 
-    wire [4:0] rt;
-    wire [4:0] rd;
-    wire [31:0] writedata;
-    wire [31:0] rsdata;
-    wire [31:0] rtdata;
     registerfile RF(
         clk,
         rs,

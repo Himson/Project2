@@ -87,7 +87,7 @@ module control(
                 RegWrite = 0;
                 bne = 0;
             end  
-            6'h4: //bne
+            6'h5: //bne
             begin 
                 Regdst = 0;
                 Jump = 0;

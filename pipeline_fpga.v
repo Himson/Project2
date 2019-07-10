@@ -24,8 +24,11 @@ module pipeline_fpga(
     input   cycle,
     input   [4:0]RegisterIndex,        
     output  [3:0]Anodes,
-    output  [6:0]Cathodes
+    output  [6:0]Cathodes,
+    output  reg [4:0] count
     );
+    initial #0 count = 5'b00001;
+    always@(posedge cycle) count <= count + 1;
     wire [31:0] if_current_instru_addr_plus4;
     wire [31:0] ifbranchorjump;
     wire [31:0] next_instruction_addr;
@@ -321,9 +324,16 @@ module pipeline_fpga(
         forward_a_control,
         forward_b_control
     );
+//    reg [31:0] test = 32'h00000020;
+//    reg [31:0] test;
+//    initial begin 
+//    #0 test <=32'h0;
+//    #1 test = cycle;
+//    end
+//    always @(cycle) test = cycle;
     SSD_Display Test1 (
           .clock(clock), 
-          .number_32(RegisterIndex), 
+          .number_32(number), 
           .Cathodes(Cathodes), 
           .Anodes(Anodes)
     );
