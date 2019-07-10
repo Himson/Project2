@@ -26,7 +26,7 @@ module DataMemory(
     input MemWrite,
     input MemRead,
     input [31:0] WriteData,
-    output reg[31:0] ReadData
+    output reg [31:0] ReadData
     );
     parameter x = 32;
     integer i;
@@ -38,7 +38,6 @@ module DataMemory(
         for (i = 0; i < x; i = i + 1)
             memory[i] <= 32'b0;
     end
-
     always@(negedge clk)begin
         if(MemRead==1'b1)begin
             ReadData = memory[ind];

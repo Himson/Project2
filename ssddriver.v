@@ -156,27 +156,3 @@ module SSD_Display(
     );
 
 endmodule
-
-// module Test SSD
-module SSD(
-    input   wire            clock, 
-    input   wire    [4:0]   RegisterIndex,        
-    output  wire    [3:0]   Anodes,
-    output  wire    [6:0]   Cathodes
-);
-    reg [31:0] memory [0:31];
-    integer i;
-    initial begin
-        for (i = 0; i < 32; i = i + 1)
-            memory[i] = i;
-    end
-
-    wire [31:0] number_32;
-    assign number_32 = memory[RegisterIndex];
-    wire [15:0] number_16;
-    assign number_16 = memory[RegisterIndex];
-
-    SSD_Display Test1 (
-        .clock(clock), .number(number_16), .Cathodes(Cathodes), .Anodes(Anodes)
-    );
-endmodule
